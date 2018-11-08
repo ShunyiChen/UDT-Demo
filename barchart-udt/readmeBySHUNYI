@@ -1,0 +1,36 @@
+关于编译问题的解决办法https://github.com/barchart/barchart-udt/issues/52
+系统build文档https://github.com/barchart/barchart-udt/wiki/Build-System
+
+基本要领：
+1.使用JDK1.8 64bit(编译64位的jar用)
+2.Eclipse oxygen2
+3.在barchart-udt-core中pom.xml,修改slf4j版本为<version>1.7.25</version>
+4.在barchart-udt-archon中pom.xml,修改<parent>版本为<version>2.3.0</version>,Java版本改为<projectJavaVersion>1.8</projectJavaVersion>
+5.在barchart-udt-bundle中pom.xml,更改nar本地库。不同的操作系统，收集不同的nar。
+6.在根pom.xml文件中添加新<repository>
+    <repositories>
++		<!-- location of artifacts before they are published to maven central -->
++		<repository>
++			<id>sonatype-public</id>
++			<name>sonatype-public</name>
++			<url>http://oss.sonatype.org/content/groups/public/</url>
++			<releases>
++				<enabled>true</enabled>
++			</releases>
++			<snapshots>
++				<enabled>true</enabled>
++			</snapshots>
++		</repository>
++
++	</repositories>
+
+编译顺序:
+先编译 barchart-udt-core
+命令：
+cd barchart-udt-core
+mvn clean install --activate-profiles modules,nar,artifact-version,package-bundle --update-snapshots -Dmaven.test.skip=true
+
+再编译 barchart-udt-bundle
+命令：
+cd barchart-udt-bundle
+mvn clean install --activate-profiles modules,nar,artifact-version,package-bundle --update-snapshots -Dmaven.test.skip=true
